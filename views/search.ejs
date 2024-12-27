@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FanHub</title>
+    <link rel="stylesheet" href="/styles/search.css" />
+  </head>
+  <body>
+    <h1 class="header">FanHub</h1>
+    <div class="container">
+      <div class="search-container">
+        <form action="/search" method="GET" class="search-form">
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter username"
+            required
+          />
+          <button type="submit">Search</button>
+        </form>
+
+        <% if (errorMessage) { %>
+        <div class="error-message"><%= errorMessage %></div>
+        <% } %>
+
+        <ul>
+          <% users.forEach(user => { %>
+          <li>
+            <a href="/profile/<%= user.id %>">
+              <img
+                src="<%= user.profile_photo %>"
+                alt="Profile Photo"
+                width="50"
+                height="50"
+              />
+              <%= user.username %>
+            </a>
+          </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

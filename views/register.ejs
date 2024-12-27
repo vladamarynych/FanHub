@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FanHub</title>
+    <link rel="stylesheet" href="/styles/register.css" />
+  </head>
+  <body>
+    <h1 class="header">FanHub</h1>
+
+    <div class="signup-container">
+      <% if (errorMessage) { %>
+      <div class="error-message" style="color: red"><%= errorMessage %></div>
+      <% } %>
+      <h2>Sign Up</h2>
+      <form action="/signup" method="POST">
+        <label for="username">Topic (can be changed later)</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Enter your topic name"
+          required
+        />
+
+        <label for="password">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter your password"
+          required
+        />
+
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </body>
+</html>

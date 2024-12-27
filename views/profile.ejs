@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FanHub</title>
+    <link rel="stylesheet" href="/styles/profile.css" />
+  </head>
+  <body>
+    <h1 class="header">FanHub</h1>
+
+    <h2 class="greeting"><%= user.username %></h2>
+
+    <form
+      id="nicknameForm"
+      class="topic-div"
+      action="/update-nickname"
+      method="POST"
+      <% if (isOwnProfile) { %> style="display:flex;" <% } else { %> style="display:none;" <% } %>
+      >
+    
+      <label for="nickname"></label>
+      <input style="display: none;" type="text" id="nickname" name="nickname" required />
+      <button id="nickname-btn" type="submit">Change topic</button>
+    </form>
+
+    <div class="profile-div">
+      <% if (typeof isOwnProfile === 'undefined') { %> <% var isOwnProfile =
+      false; %> <% } %> <% if (user.profile_photo) { %>
+      <img
+        src="<%= user.profile_photo %>"
+        alt="Profile Photo"
+        class="profile-photo"
+      />
+      <% } else { %>
+      <p>Profile Photo not available</p>
+      <% } %> <% if (isOwnProfile) { %>
+      <form
+        id="updatePhotoForm"
+        action="/upload_photo"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <input
+          type="file"
+          id="profilePhotoInput"
+          name="profile_photo"
+          style="display: none"
+        />
+        <button
+          class="profile_photo_btn"
+          type="button"
+          onclick="document.getElementById('profilePhotoInput').click();"
+        >
+          Update Profile Photo
+        </button>
+      </form>
+      <% } %>
+    </div>
+
+    <% if (isOwnProfile) { %>
+
+    <form
+      action="/update_profile"
+      method="POST"
+      id="edit-description-form"
+      style="display: none"
+    >
+      <textarea name="description" id="description" rows="5" cols="40">
+        <%= user.description %>
+      </textarea>
+      <div class="button-container">
+        <button type="submit">Save</button>
+        <button
+          type="button"
+          id="cancel-edit-btn"
+          onclick="toggleDescriptionEdit()"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+    <% } %>
+
+    <div class="profile-description" id="profile-description">
+      <p id="description-text">
+        <%= user.description || 'No description added yet.' %>
+      </p>
+      <% if (isOwnProfile) { %>
+      <button id="edit-description-btn" onclick="toggleDescriptionEdit()">
+        Edit Description
+      </button>
+      <% } %>
+    </div>
+
+    <div>
+      <a href="/search" class="button-link">Find Somebody</a>
+    </div>
+
+    <div class="rating_section" isOwnProfile="<%= isOwnProfile %>">
+      <h3>Rating: <span id="averageRating"><%= averageRating %></span> / 10</h3>
+      <% if (!isOwnProfile) { %>
+      <form id="ratingForm" data-user-id="<%= user.id %>">
+        <label for="rating">Rate this idea (1-10):</label>
+        <input
+          type="number"
+          id="rating"
+          name="rating"
+          min="1"
+          max="10"
+          required
+        />
+        <button type="submit">Submit Rating</button>
+      </form>
+      <% } %>
+    </div>
+
+    <script>
+      function toggleDescriptionEdit() {
+        const form = document.getElementById("edit-description-form");
+        const profileDescription = document.getElementById(
+          "profile-description"
+        );
+
+        if (form && profileDescription) {
+          if (form.style.display === "none") {
+            form.style.display = "block";
+            profileDescription.style.display = "none";
+          } else {
+            form.style.display = "none";
+            profileDescription.style.display = "block";
+          }
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const profilePhotoInput = document.getElementById("profilePhotoInput");
+        if (profilePhotoInput) {
+          profilePhotoInput.addEventListener("change", function () {
+            document.getElementById("updatePhotoForm").submit();
+          });
+        }
+
+        const textarea = document.getElementById("description");
+        if (textarea) {
+          textarea.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+          });
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const ratingForm = document.getElementById("ratingForm");
+        const ratingInput = document.getElementById("rating");
+        const averageRatingElement = document.getElementById("averageRating");
+
+        if (ratingForm) {
+          ratingForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const rating = Number(ratingInput.value);
+            const targetUserId = ratingForm.dataset.userId;
+
+            if (isNaN(rating) || rating < 1 || rating > 10) {
+              console.error("Rating must be a number between 1 and 10.");
+              return;
+            }
+
+            try {
+              const response = await fetch(
+                `/submit_rating?userId=${targetUserId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ rating }),
+                }
+              );
+
+              const data = await response.json();
+
+              if (data.success) {
+                averageRatingElement.textContent = Math.round(data.newAverage);
+              } else {
+                console.error("Error:", data.message);
+              }
+            } catch (error) {
+              console.error("Error submitting rating:", error);
+            }
+          });
+        }
+      });
+
+      document
+        .getElementById("nicknameForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); 
+
+          const newNickname = document.getElementById("nickname").value;
+
+          
+          fetch("/update-nickname", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nickname: newNickname }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("message").textContent =
+                "Changed to: " + data.nickname;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("message").textContent =
+                "Not possible to change.";
+            });
+        });
+
+
+
+
+        document.getElementById('nickname-btn').addEventListener('click', function() {
+  var nickname = document.getElementById('nickname');
+  if (nickname.style.display === 'none') {
+    nickname.style.display = 'inline-block'; 
+  } else {
+    nickname.style.display = 'none'; 
+  }
+});
+
+    </script>
+  </body>
+</html>

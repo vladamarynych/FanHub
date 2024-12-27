@@ -1,0 +1,122 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #a4d7b2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+
+
+.signup-container {
+  width: 30%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #50b57f;
+  border-radius: 10px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #50b57f;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(26, 107, 26);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3d8047;
+}
+
+.terms {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgb(26, 107, 26);
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000;
+}
+
+main {
+  padding-top: 60px;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.error-message {
+  color: rgb(8, 51, 8);
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .signup-container {
+    width: 60%;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .signup-container {
+    width: 70%;
+    padding: 10px;
+  }
+
+  .signup-container h2 {
+    font-size: 1.5em;
+  }
+
+  .signup-container input {
+    font-size: 1em;
+    padding: 10px;
+  }
+
+  .signup-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+  }
+
+  .header {
+    font-size: 2em;
+  }
+
+  .terms label {
+    font-size: 0.9em;
+  }
+}
