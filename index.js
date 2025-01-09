@@ -44,8 +44,8 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-  "fanhub/public/assets/img/uploads",
-  express.static(path.join(__dirname, "fanhub/public/assets/img/uploads"))
+  "FanHub/public/assets/img/uploads",
+  express.static(path.join(__dirname, "FanHub/public/assets/img/uploads"))
 );
 
 app.get("/", (req, res) => {
@@ -164,7 +164,7 @@ app.post("/signup", async (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "fanhub/public/assets/img/uploads");
+    cb(null, "FanHub/public/assets/img/uploads");
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
